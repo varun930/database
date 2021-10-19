@@ -1,0 +1,95 @@
+[
+{
+	"clientName" :
+	{
+		"firstName" : "varun",
+		"lastName" : 123,
+		"dob" : "01/01/1995",
+		"clientID" : "varun-123"
+	},
+	"clientAddress" : 
+	{
+		"lane1" : "tilak",
+		"lane2" : "subhash",
+		"street" : "nehru",
+		"city" : "hyderabad",
+		"state" : "telangana"
+	},
+	"clientContact" : 
+	{
+		"residenceNo" : 123456789,
+		"officeNo" : 987654321
+	},
+	"clientAccount" :
+	{
+		"accountNo" : 11223344,
+		"bankName" : "SBI"
+	}
+},
+{
+	"clientName" :
+	{
+		"firstName" : "Sunil",
+		"lastName" : 234,
+		"dob" : "01/01/1996",
+        "ClientID" : "Sunil-234"
+	},
+	"clientAddress" : 
+	{
+		"lane1" : "Victoria",
+		"lane2" : "Tilak",
+		"street" : "Sivaji",
+		"city" : "Pune",
+		"state" : "Maharastra"
+	},
+	"clientContact" : 
+	{
+		"residenceNo" : 963258741,
+		"officeNo" : 369852147
+	},
+	"clientAccount" :
+	{
+		"accountNo" : 36521452,
+		"bankName" : "AXIS"
+	}
+},
+{
+	"clientName" :
+	{
+		"firstName" : "Sandeep",
+		"lastName" : 345,
+		"dob" : "01/01/1993",
+		"clientID" : "Sandeep-345"
+	},
+	"clientAddress" : 
+	{
+		"lane1" : "Gandhi",
+		"lane2" : "Indira",
+		"street" : "Lal",
+		"city" : "hyderabad",
+		"state" : "telangana"
+	},
+	"clientContact" : 
+	{
+		"residenceNo" : 987632541,
+		"officeNo" : 3214569857
+	},
+	"clientAccount" :
+	{
+		"accountNo" : 22334455,
+		"bankName" : "HDFC"
+	}
+}
+]
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	

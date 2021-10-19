@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener" doc:name="HTTP Listener config" doc:id="859ab313-6ee5-49c2-8271-1dec0f6007f2" doc:description="This is for Listener Configurations" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="9a6371a6-3fb7-4e84-a25a-4636b3eeb707" file="prop.yaml" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="caab2b00-d50d-4b38-8cee-ded1ab693c59" >
+		<db:mssql-connection host="${database.host}" port="${database.port}" user="${secure::database.user}" password="${secure::database.password}" databaseName="${database.databasename}" />
+	</db:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="0e6eb2a5-c0c1-4aa0-bf0a-57db0ba9098a" file="prop.yaml" key="varunmule1234567" />
+</mule>

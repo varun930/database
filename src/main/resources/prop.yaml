@@ -1,0 +1,10 @@
+http : 
+  host : "localhost"
+  port : "8085"
+
+database : 
+  host : "LAPTOP-EJCUH3HN"
+  port : "1433"
+  user : "![mNqqg7fabch6NoxFn9LhDQ==]"
+  password : "![gPVurV8Wcihlb90iwFKsIg==]"
+  databasename : "detailsClient"

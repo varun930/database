@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="PARENT" doc:id="09de66b1-1365-4d1c-a984-1578f43a6210" >
+		<http:listener doc:name="DatabasePoc" doc:id="123f21b9-cd7a-4d38-bb5f-bde36fd3aa5a" config-ref="HTTP_Listener" path="/poc">
+			<http:response statusCode="#[vars.response]" />
+		</http:listener>
+		<choice doc:name="Choice" doc:id="5e0eceba-5e78-42a8-8a3e-f95d16677a61" >
+			<when expression='#[attributes.Method == "POST"]'>
+				<logger level="INFO" doc:name="Input Log" doc:id="fbbf30c5-3b45-49f2-a6cb-a58affbd2cd6" message='#["Details Received Successfully"]'/>
+				<flow-ref doc:name="Flow Reference" doc:id="bbf34bb4-e5da-4570-a949-8be152b5d65d" name="Child"/>
+				<logger level="INFO" doc:name="Process Log" doc:id="2348549c-6576-48d1-9cbc-8a8c978fe894" message='#["Details Entered after Flow in a Success Manner"]'/>
+				<ee:transform doc:name="Transform Message" doc:id="7a4e191e-bc31-452c-bcad-0f7a3dc192c3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message" : "Details inserted successfully",
+}
+	
+	]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Final Log" doc:id="317cf989-cb38-4470-b3ee-9eb26840249b" message='#["Details Inserted Successfully"]'/>
+				<set-variable value="201" doc:name="Response Status" doc:id="974d7565-266b-4c45-886f-e8a7e00fb55d" variableName="response" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Input Log" doc:id="3c586fad-7ebe-4c5f-bd9b-aee92d4f908e" message='#["Details Received Successfully"]'/>
+				<flow-ref doc:name="GET" doc:id="07c3a240-7918-4d25-ab18-dfb3cbc0205d" name="GET"/>
+				<logger level="INFO" doc:name="Process Log" doc:id="62917936-4764-42cd-8d92-1eca3966747d" message='#["Details are about to fetch Details"]'/>
+				<set-variable value="200" doc:name="Response Status" doc:id="f54e8112-942c-4486-9f83-e027b03022ca" variableName="response"/>
+				<ee:transform doc:name="Transform Message" doc:id="f614134d-17db-4cd2-88b7-8a818adc00ab" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Output" : "Details fetched successfully"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Final Log" doc:id="f1a901ac-13fa-485f-8b06-ba31a7597df8" message='#["Details are successfully sent"]'/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

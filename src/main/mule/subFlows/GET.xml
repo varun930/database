@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="GET" doc:id="32cd4b78-9d8e-4298-aa60-20da6d859081" >
+		<set-variable value="#[payload]" doc:name="Input Data" doc:id="0b8d8571-018c-475d-b253-d90d2755d6b1" variableName="inputdata"/>
+		<set-variable value="#[[]]" doc:name="Output Data" doc:id="5d279ff3-a322-4ccc-a0f3-0becab74e3b4" variableName="outputdata"/>
+		<foreach doc:name="For Each" doc:id="b255aeaf-92bf-48e6-8ed5-df0040d57494" collection="#[vars.inputdata]">
+			<try doc:name="Try" doc:id="78a08b13-06fe-4e33-b233-365f8c3eb7ca" >
+				<logger level="INFO" doc:name="Processing Log" doc:id="7f93e5fd-d043-4464-a8e9-6c7a3ac1c694" message='#["Details are about to fetch"]'/>
+				<scatter-gather doc:name="Scatter-Gather" doc:id="d099d65d-fd9b-445d-9974-d321fc755e5e" >
+					<route >
+						<db:select doc:name="Select Name" doc:id="cd3b4723-d88b-442d-9e0f-23718025f225" config-ref="Database_Config" target="name">
+							<db:sql ><![CDATA[select * from name where clientID = :clientID]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"clientID" : attributes.queryParams.clientID
+}]]]></db:input-parameters>
+						</db:select>
+					</route>
+					<route >
+						<db:select doc:name="Select Address" doc:id="02720402-6d17-458f-bcd9-e7e418f142db" config-ref="Database_Config" target="address">
+							<db:sql ><![CDATA[select * from address where clientID = :clientID]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"clientID" : attributes.queryParams.clientID
+}]]]></db:input-parameters>
+						</db:select>
+					</route>
+					<route >
+						<db:select doc:name="Select contact" doc:id="1c9b8bb0-3631-4714-bdf4-f5ee9eab7724" config-ref="Database_Config" target="contact">
+							<db:sql ><![CDATA[select * from contact where clientID = :clientID]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"clientID" : attributes.queryParams.clientID
+}]]]></db:input-parameters>
+						</db:select>
+					</route>
+					<route >
+						<db:select doc:name="Select  Account" doc:id="329417d3-7bbf-4d51-af4e-2a51a968dd78" config-ref="Database_Config" target="account">
+							<db:sql ><![CDATA[select * from account where clientID = :clientID]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"clientID" : attributes.queryParams.clientID
+}]]]></db:input-parameters>
+						</db:select>
+					</route>
+				</scatter-gather>
+				<ee:transform doc:name="Transform Message" doc:id="437d25b5-1b5b-48e7-ac30-d87a8b51b20b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+vars.inputdata]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</try>
+		</foreach>
+	</flow>
+</mule>

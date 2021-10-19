@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="Child" doc:id="0a7171e9-592e-4071-aa61-66f9e54da86a" >
+		<set-variable value="#[payload]" doc:name="Input Data" doc:id="d40f3064-7e7b-45f1-bc5d-a506fae131a3" variableName="Inputdata" mimeType="application/json"/>
+		<set-variable value="#[[]]" doc:name="Error" doc:id="b668109f-6bf4-4484-9c64-ff7c1f171c72" variableName="errordata"/>
+		<foreach doc:name="For Each" doc:id="222972d7-89d0-4982-8fbc-56e0700be858" collection="#[vars.inputdata]">
+			<try doc:name="Try" doc:id="00202856-a58e-40bf-83d2-9fb1d056e2fe" >
+				<logger level="INFO" doc:name="Process Log" doc:id="814c3e16-cefc-4e89-8f05-9aa3aa6a463e" message='#["Details will enter soon"]'/>
+				<scatter-gather doc:name="Scatter-Gather" doc:id="bcc918b2-05dc-41f7-99d5-70dc890cd330" >
+					<route >
+						<db:insert doc:name="Insert Name" doc:id="79d185a2-c955-4739-98c7-8aa2c0220310" config-ref="Database_Config" target="name">
+							<db:sql ><![CDATA[insert into name (firstName, lastName, dob, clientID)
+values (:firstName, :lastName, :dob, :clientID);
+]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"firstName" : payload.clientName.firstName, 
+	"lastName" : payload.clientName.lastName, 
+	"dob" : payload.clientName.dob,
+	"clientID" : payload.clientName.clientID
+}]]]></db:input-parameters>
+						</db:insert>
+					</route>
+					<route >
+						<db:insert doc:name="Insert Address" doc:id="ceeab2e3-14f6-41b7-b42e-d1295d0df86d" config-ref="Database_Config" target="address">
+							<db:sql ><![CDATA[insert into address (lane1, lane2, street, city, state, clientID)
+values (:lane1, :lane2, :street, :city, :state, :clientID);]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"lane1" : payload.clientAddress.lane1, 
+	"lane2" : payload.clientAddress.lane2, 
+	"street" : payload.clientAddress.street, 
+	"city" : payload.clientAddress.city, 
+	"state" : payload.clientAddress.state, 
+	"clientID" : payload.clientName.clientID
+}]]]></db:input-parameters>
+						</db:insert>
+					</route>
+					<route >
+						<db:insert doc:name="Insert Contact" doc:id="9c22b4eb-a5ce-4f63-9419-97430ec8d3c7" config-ref="Database_Config" target="contact">
+							<db:sql ><![CDATA[insert into contact (residenceNo, officeNo, clientID)
+values (:residenceNo, :officeNo, :clientID);]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"residenceNo" : payload.clientContact.residenceNo, 
+	"officeNo" : payload.clientContact.officeNo, 
+	"clientID" : payload.clientName.clientID
+}]]]></db:input-parameters>
+						</db:insert>
+					</route>
+					<route >
+						<db:insert doc:name="Insert Account" doc:id="617cb63d-df31-48d8-a6ba-9205381d7129" config-ref="Database_Config" target="account">
+							<db:sql ><![CDATA[insert into account (accountNo, bankName, clientID)
+values (:accountNo, :bankName, :clientID);]]></db:sql>
+							<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"accountNo" : payload.clientAccount.accountNo, 
+	"bankName" : payload.clientAccount.bankName, 
+	"clientID" : payload.clientName.clientID
+}]]]></db:input-parameters>
+						</db:insert>
+					</route>
+				</scatter-gather>
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="3aac4478-46a4-4f4e-82bf-045092774704" >
+						<logger level="ERROR" doc:name="Error Log" doc:id="609a8839-3ccb-44a0-8a16-62fd25f3584c" message='#["An Error Occured In inserting Details"]'/>
+						<set-payload value="#[payload]" doc:name="Error" doc:id="ca8e0b4f-0a60-4338-b1af-b665b7aa93d3" />
+						<set-variable value="#[vars.errordata + payload]" doc:name="Error" doc:id="ea3b4276-f1bd-4cce-a8da-c0d2fc76c9c3" variableName="errordata"/>
+					</on-error-continue>
+				</error-handler>
+			</try>
+			<ee:transform doc:name="Transform Message" doc:id="9c2e5128-46ba-4c92-9650-f469a8dca110" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"OUTPUT" : "Details inserted Successfully"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</foreach>
+	</flow>
+</mule>
